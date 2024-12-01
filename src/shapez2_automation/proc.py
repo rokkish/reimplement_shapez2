@@ -9,6 +9,7 @@ class Shapez2Proc:
 
     def __init__(self) -> None:
         self.callback = {
+            "copy": copy,
             "colorize": colorize,
             "crystarize": crystarize,
             "pin": pin,
@@ -37,6 +38,10 @@ class Shapez2Proc:
             inp = self.callback[p](inp)
         return inp
 
+
+def copy(inp: Any) -> TypeGuard[Shapez2Type]:
+    "入力図形をそのまま出力する"
+    return inp
 
 def colorize(inp: Any) -> TypeGuard[Shapez2Type]:
     return inp
