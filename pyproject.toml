@@ -10,9 +10,13 @@ dependencies = [
     "mypy>=1.11.2",
     "pytest>=8.3.3",
     "pytest-xdist>=3.6.1",
+    "rich>=13.9.4",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
+
+[project.scripts]
+shapez2-cli = "shapez2_automation.cli:cli"
 
 [build-system]
 requires = ["hatchling"]
@@ -32,3 +36,4 @@ packages = ["src/shapez2_automation"]
 no_strict_optional = true
 ignore_missing_imports = true
 check_untyped_defs = true
+enable_incomplete_feature = "NewGenericSyntax"

@@ -1,16 +1,29 @@
 from dataclasses import dataclass
 from enum import StrEnum, auto
-from typing import Sequence
+from typing import Sequence, Union, TypeAlias
 
 
 class Shapez2Figures(StrEnum):
     """形状タイプ"""
 
     CIRCLE = auto()
-    SQUARE = auto()
-    SHURIKEN = auto()
-    DIAMOND = auto()
+    RECT = auto()
+    STAR = auto()
+    WINDMILL = auto()
+    PIN = auto()
+    CRYSTAL = auto()  # クリスタルは円形の１種のみ
     EMPTY = auto()  # 空図形
+
+
+_token_to_fig = {
+    "C": Shapez2Figures.CIRCLE,
+    "R": Shapez2Figures.RECT,
+    "S": Shapez2Figures.STAR,
+    "W": Shapez2Figures.WINDMILL,
+    "P": Shapez2Figures.PIN,
+    "c": Shapez2Figures.CRYSTAL,
+    "-": Shapez2Figures.EMPTY,
+}
 
 
 class Shapez2Colors(StrEnum):
@@ -19,10 +32,25 @@ class Shapez2Colors(StrEnum):
     RED = auto()
     GREEN = auto()
     BLUE = auto()
-    MAGENDA = auto()
+    PURPLE = auto()
     CYAN = auto()
     YELLOW = auto()
-    EMPTY = auto()  # 素材の灰色
+    WHITE = auto()
+    UNDEFINED = auto()  # 素材の灰色
+    EMPTY = auto()  # 空図形
+
+
+_token_to_col = {
+    "R": Shapez2Colors.RED,
+    "G": Shapez2Colors.GREEN,
+    "B": Shapez2Colors.BLUE,
+    "P": Shapez2Colors.PURPLE,
+    "C": Shapez2Colors.CYAN,
+    "Y": Shapez2Colors.YELLOW,
+    "W": Shapez2Colors.WHITE,
+    "U": Shapez2Colors.UNDEFINED,
+    "-": Shapez2Colors.EMPTY,
+}
 
 
 class Shapez21ColorPattern(StrEnum):
@@ -47,20 +75,15 @@ class Shapez2Quarter:
 
     @staticmethod
     def prohibit_pairs(figure, color, ispin, iscrystal) -> bool:
-        return (
-            figure == Shapez2Figures.EMPTY
-            and (color != Shapez2Colors.EMPTY or iscrystal)
-        ) or (figure != Shapez2Figures.EMPTY and ispin)
+        return figure == Shapez2Figures.EMPTY and color != Shapez2Colors.EMPTY
 
     def __post_init__(self) -> None:
+        self.ispin = self.figure == Shapez2Figures.PIN
+        self.iscrystal = self.figure == Shapez2Figures.CRYSTAL
+
         if self.figure == Shapez2Figures.EMPTY:
-            if self.color != Shapez2Colors.EMPTY or self.iscrystal:
-                raise ValueError("図形が空なら、colorは必ず空であり、クリスタルは禁止")
-            else:
-                pass
-        else:
-            if self.ispin:
-                raise ValueError("図形なら、ピンは禁止")
+            if self.color != Shapez2Colors.EMPTY:
+                raise ValueError("図形が空なら、colorは必ず空")
 
 
 @dataclass
@@ -138,9 +161,21 @@ class Shapez2MultiLayer:
         self.__validate_mlayer(self.mlayer)
 
     def __validate_mlayer(self, v: Sequence[Shapez2Layer]) -> None:
-        if len(v) < 5:
+        if len(v) > 4:
             raise ValueError(f"mlayers must have 1~4 layers, but {len(v)}")
         if False:
             # 多層の禁止事項
             raise ValueError(f"crystalの下は空禁止.落下するので")
             raise ValueError(f"pin の重なりはおそらく禁止")
+
+    def __repr__(self) -> str:
+        ret = ""
+        for i, l in enumerate(self.mlayer):
+            ret += f"Layer: {i}\n"
+            for j, q in enumerate(l.layer):
+                ret += f"  Quarter: {j}, {q}\n"
+            ret += "\n"
+        return ret
+
+
+Shapez2Type: TypeAlias = Union[Shapez2Layer, Shapez2MultiLayer]

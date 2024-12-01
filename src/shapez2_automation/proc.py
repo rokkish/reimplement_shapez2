@@ -1,29 +1,74 @@
+from .schemas import *
+from typing import Union, TypeGuard, Any
+
+
 class Shapez2Proc:
     """primitiveな図形の加工屋さん"""
 
-    def colorize(self) -> None:
-        pass
+    procs: list[str] = []
 
-    def crystarize(self) -> None:
-        pass
+    def __init__(self) -> None:
+        self.callback = {
+            "colorize": colorize,
+            "crystarize": crystarize,
+            "pin": pin,
+            "rotate": rotate,
+            "separate": separate,
+            "swap": swap,
+            "merge": merge,
+            "merge_flat": merge_flat,
+            "merge_laminate": merge_laminate,
+        }
 
-    def pin(self) -> None:
-        pass
+    def add_proc(self, *args, **kwargs) -> None:
+        if isinstance(kwargs["proc"], list):
+            for p in kwargs["proc"]:
+                self.procs.append(p)
+            if not isinstance(p, str):
+                raise ValueError(f"{p} must be str")
+        elif isinstance(kwargs["proc"], str):
+            self.procs.append(kwargs["proc"])
+        else:
+            raise ValueError(f"{kwargs["proc"]} must be str or list[str]")
 
-    def rotate(self) -> None:
-        pass
+    def run(self, *args, **kwargs) -> Shapez2Type:
+        inp = kwargs["shapez_string"]
+        for p in self.procs:
+            inp = self.callback[p](inp)
+        return inp
 
-    def separate(self) -> None:
-        pass
 
-    def swap(self) -> None:
-        pass
+def colorize(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
 
-    def merge(self) -> None:
-        pass
 
-    def merge_flat(self) -> None:
-        pass
+def crystarize(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
 
-    def merge_laminate(self) -> None:
-        pass
+
+def pin(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def rotate(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def separate(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def swap(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def merge(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def merge_flat(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
+
+
+def merge_laminate(inp: Any) -> TypeGuard[Shapez2Type]:
+    return inp
