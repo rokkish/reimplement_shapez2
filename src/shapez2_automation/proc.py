@@ -1,5 +1,6 @@
+from shapez2_automation.schemas import Shapez2MultiLayer
 from .schemas import *
-from typing import TypeGuard, Any
+from typing import Any
 
 
 class Shapez2Proc:
@@ -14,6 +15,7 @@ class Shapez2Proc:
             "crystarize": crystarize,
             "pin": pin,
             "rotate": rotate,
+            "rotate_rev": rotate_rev,
             "separate": separate,
             "swap": swap,
             "merge": merge,
@@ -39,41 +41,68 @@ class Shapez2Proc:
         return inp
 
 
-def copy(inp: Any) -> TypeGuard[Shapez2Type]:
+def copy(inp: Any) -> Shapez2Type:
     "入力図形をそのまま出力する"
     return inp
 
-def colorize(inp: Any) -> TypeGuard[Shapez2Type]:
+
+def colorize(inp: Any) -> Shapez2Type:
     return inp
 
 
-def crystarize(inp: Any) -> TypeGuard[Shapez2Type]:
+def crystarize(inp: Any) -> Shapez2Type:
     return inp
 
 
-def pin(inp: Any) -> TypeGuard[Shapez2Type]:
+def pin(inp: Any) -> Shapez2Type:
     return inp
 
 
-def rotate(inp: Any) -> TypeGuard[Shapez2Type]:
+def rotate(inp: Shapez2MultiLayer) -> Shapez2Type:
+    "右に90度回転"
+    ret_mlayer = []
+    ret_layer = []
+    for layer in inp.mlayer:
+        ret_layer = [
+            layer.layer[2],
+            layer.layer[0],
+            layer.layer[3],
+            layer.layer[1],
+        ]
+        ret_mlayer.append(Shapez2Layer(ret_layer))
+    return Shapez2MultiLayer(ret_mlayer)
+
+
+def rotate_rev(inp: Shapez2MultiLayer) -> Shapez2MultiLayer:
+    "左に90度回転"
+    ret_mlayer = []
+    ret_layer = []
+    for layer in inp.mlayer:
+        ret_layer = [
+            layer.layer[1],
+            layer.layer[3],
+            layer.layer[0],
+            layer.layer[2],
+        ]
+        ret_mlayer.append(Shapez2Layer(ret_layer))
+    return Shapez2MultiLayer(ret_mlayer)
+
+
+def separate(inp: Any) -> Shapez2Type:
     return inp
 
 
-def separate(inp: Any) -> TypeGuard[Shapez2Type]:
+def swap(inp: Any) -> Shapez2Type:
     return inp
 
 
-def swap(inp: Any) -> TypeGuard[Shapez2Type]:
+def merge(inp: Any) -> Shapez2Type:
     return inp
 
 
-def merge(inp: Any) -> TypeGuard[Shapez2Type]:
+def merge_flat(inp: Any) -> Shapez2Type:
     return inp
 
 
-def merge_flat(inp: Any) -> TypeGuard[Shapez2Type]:
-    return inp
-
-
-def merge_laminate(inp: Any) -> TypeGuard[Shapez2Type]:
+def merge_laminate(inp: Any) -> Shapez2Type:
     return inp

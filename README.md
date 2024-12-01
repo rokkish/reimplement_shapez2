@@ -1,3 +1,8 @@
-# shapez2-automation
+# Reimplement shapez2 simulator
 
-Describe your project here.
+### how to run
+```
+uv run shapez2-cli "RrRgRbRy:WcWpWwP-:CgC-C-Cr:SrSgcbcy" rotate
+```
+
+<img src="./docs/sample_rotate.png">

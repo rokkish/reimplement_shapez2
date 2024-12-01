@@ -7,6 +7,7 @@ from .schemas import Shapez2Type, _token_to_fig, _token_to_col, Shapez2MultiLaye
 from .parse import parse_shapez2
 from .proc import Shapez2Proc
 from .solver import Shapez2Solver
+from .viewer2d import Viewer2d
 
 
 logging.basicConfig(
@@ -51,9 +52,11 @@ class Shapez2Simulator:
             logger.info(f'in:\n{kwargs["shapez_string"]}')
             logger.info(f'solution:\n{kwargs["out"]}')
         else:
-            logger.info(f'in:\n{kwargs["shapez_string"]}')
-            logger.info(f'apply:\n{kwargs["proc"]}')
-            logger.info(f'out:\n{kwargs["out"]}')
+            # logger.info(f'in:\n{kwargs["shapez_string"]}')
+            # logger.info(f'apply:\n{kwargs["proc"]}')
+            # logger.info(f'out:\n{kwargs["out"]}')
+            Viewer2d(kwargs["shapez_string"]).print()
+            Viewer2d(kwargs["out"]).print()
 
 
 def cli() -> None:
@@ -68,7 +71,7 @@ def cli() -> None:
         "proc",
         nargs="*",
         choices=list(Shapez2Proc().callback.keys()),
-        default="rotate",
+        default="copy",
         help=f"図形に適用する操作を選択する",
     )
     parser.add_argument(
