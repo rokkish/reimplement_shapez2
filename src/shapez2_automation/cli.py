@@ -50,8 +50,9 @@ def cli() -> None:
     parser.add_argument(
         "proc",
         nargs="*",
+        choices=list(Shapez2Proc().callback.keys()),
         default="rotate",
-        help=f"図形に適用する操作を選択する. {list(Shapez2Proc().callback.keys())} are available",
+        help=f"図形に適用する操作を選択する",
     )
 
     d = dict()

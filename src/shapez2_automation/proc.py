@@ -26,8 +26,8 @@ class Shapez2Proc:
                 self.procs.append(p)
             if not isinstance(p, str):
                 raise ValueError(f"{p} must be str")
-        elif isinstance(kwargs["proc"], str):
-            self.procs.append(kwargs["proc"])
+        elif isinstance(p := kwargs["proc"], str):
+            self.procs.append(p)
         else:
             raise ValueError(f"{kwargs["proc"]} must be str or list[str]")
 
