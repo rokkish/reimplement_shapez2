@@ -1,5 +1,5 @@
 from .schemas import *
-from typing import Union, TypeGuard, Any
+from typing import TypeGuard, Any
 
 
 class Shapez2Proc:

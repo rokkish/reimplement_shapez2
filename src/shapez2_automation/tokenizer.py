@@ -46,7 +46,7 @@ class Tokenizer:
         self.next_token: Optional[Token] = None
         self.position = 0
 
-    def _info(self):
+    def _info(self) -> None:
         logger.debug(f"{self.source=}")
         logger.debug(f"{self.rules=}")
         logger.debug(f"{self.next_token=}")

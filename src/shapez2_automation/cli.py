@@ -3,9 +3,10 @@ from dataclasses import dataclass
 import logging
 from rich.logging import RichHandler
 
-from .schemas import Shapez2Type, _token_to_fig, _token_to_col
-from .parse import parse_shapez2, Shapez2MultiLayer
+from .schemas import Shapez2Type, _token_to_fig, _token_to_col, Shapez2MultiLayer
+from .parse import parse_shapez2
 from .proc import Shapez2Proc
+from .solver import Shapez2Solver
 
 
 logging.basicConfig(
@@ -17,6 +18,13 @@ logger.setLevel(logging.DEBUG)
 
 @dataclass
 class Shapez2Simulator:
+    """Shapze2シミュレータ.
+    - 図形を表す文字列をもとにパース
+    - 回転、切断などの処理を実行
+    - 図形を作成するための処理を求める
+    - 処理結果の表示
+    """
+
     # def __init__(self, *args, **kwargs) -> None:
     #     for k in kwargs.keys():
     #         self.__dict__ = kwargs[k]
@@ -32,11 +40,20 @@ class Shapez2Simulator:
         p.add_proc(**kwargs)
         return p.run(**kwargs)
 
+    def get_required_proc(self, *args, **kwargs):
+        """与えられた図形を0から作成するprocsを返す"""
+        s = Shapez2Solver(kwargs["shapez_string"])
+        return s.solve()
+
     def print(self, *args, **kwargs) -> None:
         """結果の表示"""
-        logger.info(f'in:\n{kwargs["shapez_string"]}')
-        logger.info(f'apply:\n{kwargs["proc"]}')
-        logger.info(f'out:\n{kwargs["out"]}')
+        if kwargs["invert"]:
+            logger.info(f'in:\n{kwargs["shapez_string"]}')
+            logger.info(f'solution:\n{kwargs["out"]}')
+        else:
+            logger.info(f'in:\n{kwargs["shapez_string"]}')
+            logger.info(f'apply:\n{kwargs["proc"]}')
+            logger.info(f'out:\n{kwargs["out"]}')
 
 
 def cli() -> None:
@@ -45,7 +62,7 @@ def cli() -> None:
     )
     parser.add_argument(
         "shapez_string",
-        help=f"図形を指定する. {list(_token_to_fig.keys())} for Figure. {list(_token_to_col.keys())} for Color. Example: RucrRucr is 1layer, RucrRucr:cbcbcbcb is 2layer",
+        help=f"図形を指定する",
     )
     parser.add_argument(
         "proc",
@@ -54,14 +71,31 @@ def cli() -> None:
         default="rotate",
         help=f"図形に適用する操作を選択する",
     )
+    parser.add_argument(
+        "--invert",
+        action="store_true",
+        help=Shapez2Simulator().get_required_proc.__doc__,
+    )
 
+    # 引数のparse
     d = dict()
     args = parser.parse_args()
     for k, v in args._get_kwargs():
         d[k] = v
+
+    # インスタンスの生成
     simulator = Shapez2Simulator()
+
+    # 入力文字列をobjectにパース
     d["shapez_string"] = simulator.parse(**d)
-    d["out"] = simulator.do_proc(**d)
+
+    # モードに応じてmainの処理を実行
+    if d["invert"]:
+        d["out"] = simulator.get_required_proc(**d)
+    else:
+        d["out"] = simulator.do_proc(**d)
+
+    # 結果の表示
     simulator.print(**d)
 
 

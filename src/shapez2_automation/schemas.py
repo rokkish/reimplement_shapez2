@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from typing import Sequence, Union, TypeAlias
+import logging
+from rich.logging import RichHandler
+
+logging.basicConfig(
+    level="NOTSET", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
+)  # set level=20 or logging.INFO to turn off debug
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class Shapez2Figures(StrEnum):
@@ -74,7 +82,7 @@ class Shapez2Quarter:
     iscrystal: bool  # 結晶状態の是非
 
     @staticmethod
-    def prohibit_pairs(figure, color, ispin, iscrystal) -> bool:
+    def prohibit_pairs(figure: Shapez2Figures, color: Shapez2Colors) -> bool:
         return figure == Shapez2Figures.EMPTY and color != Shapez2Colors.EMPTY
 
     def __post_init__(self) -> None:
@@ -100,7 +108,7 @@ class Shapez2Layer:
             raise ValueError(f"layers must have 4 parts, but {len(v)}")
         if (
             len(set([v.figure for v in self.layer])) == 1
-            and self.layer[0] == Shapez2Figures.EMPTY
+            and self.layer[0].figure == Shapez2Figures.EMPTY
             and not self.layer[0].ispin
         ):
             raise ValueError(f"すべての figure が空は禁止. pin ならOK")

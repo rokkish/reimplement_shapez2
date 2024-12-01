@@ -71,9 +71,12 @@ class ParsedShapez2(NamedTuple):
             ret += f"{i}: {l}\n"
         return ret
 
-    def convert_schemas(self):
+    def convert_schemas(self) -> Shapez2MultiLayer:
         """素のobjectリストから制約をもつschemaに変換"""
         l_convs = []
+        if self.shapez2 is None:
+            raise ValueError("self.shapez2 not found")
+
         for layer in self.shapez2:
             q_convs = []
             for quarter in layer:
