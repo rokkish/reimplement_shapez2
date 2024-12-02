@@ -158,6 +158,13 @@ class Shapez2Layer:
             case _:
                 raise ValueError(f"1層の図形は最大4種類が前提")
 
+    def colorize(self, color: Shapez2Colors):
+        out = []
+        for quarter in self.layer:
+            quarter.color = color
+            out.append(quarter)
+        self.layer = out
+
 
 @dataclass
 class Shapez2MultiLayer:
