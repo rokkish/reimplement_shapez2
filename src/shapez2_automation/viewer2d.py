@@ -55,8 +55,12 @@ class CanvasLayer2d:
                 ret += "".join(self.src[i])
                 ret += "\n"
                 continue
+            # [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (3, 2), (3, 2), (3, 2), (3, 2)]
+            canvas_color_idx_left = i // ((H - 1) // 2 + 1) * 3
+            canvas_color_idx_right = i // ((H - 1) // 2 + 1) + 1
+
             # 左半分の描画
-            ret += self.colors[i // ((H - 1) // 2 + 1) * 2]
+            ret += self.colors[canvas_color_idx_left]
             ret += "".join(self.src[i][: W // 2 - 1])
             ret += Colors.RESET
 
@@ -64,7 +68,7 @@ class CanvasLayer2d:
             ret += "".join(self.src[i][W // 2 - 1 : W // 2 + 2])
 
             # 右半分の描画
-            ret += self.colors[i // ((H - 1) // 2 + 1) * 2 + 1]
+            ret += self.colors[canvas_color_idx_right]
             ret += "".join(self.src[i][W // 2 + 2 :])
             ret += Colors.RESET
             ret += "\n"
@@ -79,9 +83,9 @@ class CanvasLayer2d:
             case 1:
                 roc = (0, 0 + 9, 4, 6 + 9)
             case 2:
-                roc = (0 + 5, 0, 4 + 5, 6)
-            case 3:
                 roc = (0 + 5, 0 + 9, 4 + 5, 6 + 9)
+            case 3:
+                roc = (0 + 5, 0, 4 + 5, 6)
             case _:
                 raise ValueError
 
@@ -148,9 +152,9 @@ class CanvasLayer2d:
             case 1:
                 dst = dst[:, ::-1]
             case 2:
-                dst = dst[::-1, :]
-            case 3:
                 dst = dst[::-1, ::-1]
+            case 3:
+                dst = dst[::-1, :]
             case _:
                 raise ValueError
 
@@ -218,11 +222,15 @@ class Viewer2d:
                     # ret += ''.join(ml_canvas[k])
                     # ret += "\n"
                     continue
+                # [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (3, 2), (3, 2), (3, 2), (3, 2)]
+                canvas_color_idx_left = k // ((l_h - 1) // 2 + 1) * 3
+                canvas_color_idx_right = k // ((l_h - 1) // 2 + 1) + 1
+
                 for _canvas in canvass:
                     offset = l_w // 2 - 1  # 6
                     # print(f"{k//((l_h-1)//2+1)*2+1=}, {k=}")
                     # 左半分の描画
-                    ret += _canvas.colors[k // ((l_h - 1) // 2 + 1) * 2]
+                    ret += _canvas.colors[canvas_color_idx_left]
                     ret += "".join(_canvas.src[k][:offset])  # 0...6
                     ret += Colors.RESET
 
@@ -230,7 +238,7 @@ class Viewer2d:
                     # ret += ''.join(_canvas.src[k][offset:offset+3])  # 6...9
 
                     # 右半分の描画
-                    ret += _canvas.colors[k // ((l_h - 1) // 2 + 1) * 2 + 1]
+                    ret += _canvas.colors[canvas_color_idx_right]
                     ret += "".join(_canvas.src[k][offset + 3 :])  # 9...15
                     ret += Colors.RESET
                 ret += "\n"

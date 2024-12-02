@@ -64,10 +64,10 @@ def rotate(inp: Shapez2MultiLayer) -> Shapez2Type:
     ret_layer = []
     for layer in inp.mlayer:
         ret_layer = [
-            layer.layer[2],
-            layer.layer[0],
             layer.layer[3],
+            layer.layer[0],
             layer.layer[1],
+            layer.layer[2],
         ]
         ret_mlayer.append(Shapez2Layer(ret_layer))
     return Shapez2MultiLayer(ret_mlayer)
@@ -80,9 +80,9 @@ def rotate_rev(inp: Shapez2MultiLayer) -> Shapez2MultiLayer:
     for layer in inp.mlayer:
         ret_layer = [
             layer.layer[1],
+            layer.layer[2],
             layer.layer[3],
             layer.layer[0],
-            layer.layer[2],
         ]
         ret_mlayer.append(Shapez2Layer(ret_layer))
     return Shapez2MultiLayer(ret_mlayer)
