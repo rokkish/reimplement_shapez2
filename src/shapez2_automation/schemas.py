@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import StrEnum, auto
-from typing import Sequence, Union, TypeAlias
+from typing import Sequence, Union, TypeAlias, Tuple
 import logging
 from rich.logging import RichHandler
 
@@ -194,3 +194,4 @@ class Shapez2MultiLayer:
 
 
 Shapez2Type: TypeAlias = Union[Shapez2Layer, Shapez2MultiLayer]
+Shapez2MultiLayers: TypeAlias = Tuple[Shapez2MultiLayer, Shapez2MultiLayer]
